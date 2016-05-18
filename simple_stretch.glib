@@ -1,0 +1,15 @@
+#version 330 compatibility
+
+GSTAP
+
+Ortho -1 1 -1 1
+LookAt 0 0 1 0 0 0 0 1 0
+
+Vertex simple_stretch.vert
+Fragment simple_stretch.frag
+
+Texture2D 5 white_balance.bmp
+
+Program Stretch uImageUnit 5 uScale <0.01 1 2.0>
+
+QuadXY 0.1 1.0
