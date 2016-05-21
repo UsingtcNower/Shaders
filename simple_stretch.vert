@@ -1,8 +1,8 @@
 
-out vec2 vVertex;
+out vec2 vST;
 
 void main()
 {
-	vVertex = aVertex.xy;
+	vST = aTexCoord0.st;
 	gl_Position = uModelViewProjectionMatrix * aVertex;
 }
