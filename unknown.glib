@@ -1,0 +1,16 @@
+#version 330 compatibility
+
+GSTAP
+
+Ortho -1 1 -1 1
+LookAt 0 0 1 0 0 0 0 1 0
+
+Vertex unknown.vert
+Fragment unknown.frag
+
+Texture2D 4 image.bmp
+Texture2D 5 white_balance.bmp
+
+Program Stretch tex0 4 tex1 5
+
+QuadXY 0.1 1.0
