@@ -1,0 +1,15 @@
+#version 330 compatibility
+
+GSTAP
+
+Ortho -1 1 -1 1
+LookAt 0 0 1 0 0 0 0 1 0
+
+Vertex vibrance.vert
+Fragment vibrance.frag
+
+Texture2D 5 white_balance.bmp
+
+Program Vibrance uVibrance <.0 .0 1.0> uImageUnit 5
+
+QuadXY 0.1 1.0
