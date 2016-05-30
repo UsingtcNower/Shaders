@@ -1,0 +1,18 @@
+##OpenGL GLIB
+
+GSTAP
+
+Ortho -1.  1.  -1.  1.
+LookAt 0 0 1 0 0 0 0 1 0
+
+Texture2D 4 white_balance.bmp
+
+Vertex		saturation.vert
+Fragment	saturation.frag
+
+Program WhiteBalance \
+	uImageUnit 4 \
+	uT <0 1.0 2.0>
+	
+#ÖØÒª£¡
+QuadXY .1 1.
