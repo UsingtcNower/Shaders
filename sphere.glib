@@ -1,0 +1,12 @@
+##OpenGL GLIB
+
+GSTAP
+
+Perspective 70
+LookAt 0 0 1 0 0 0 0 1 0
+
+Vertex sphere.vert
+Fragment sphere.frag
+
+Color 1 0.5 0
+Sphere 0.4 60.0 60.0
