@@ -18,7 +18,7 @@ void main()
 	vec3 argb = texture2D(uAfterUnit, vST).rgb;
 	vec4 color = vec4(1.0,0.,0.,1.);
 	
-#define SATURATION
+#define DIFFERENCE
 	
 #ifdef NEGATIVE
 	color.rgb = vec3(1.,1.,1.) - irgb;
@@ -38,6 +38,14 @@ void main()
 	float lum = dot(irgb, vec3(0.2125, 0.7154, 0.0721));
 	vec3 target = vec3(lum, lum, lum);
 	color = vec4(mix(target, irgb, uT), 1.);
+#endif
+
+#ifdef DIFFERENCE
+	vec3 target = abs(argb - brgb);
+	if(uT <= 1.)
+		color = vec4(mix(argb, brgb, uT), 1.);
+	else
+		color = vec4(mix(brgb, target, uT-1.), 1.);
 #endif
 
 	gl_FragColor = color;
