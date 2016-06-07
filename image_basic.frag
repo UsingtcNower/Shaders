@@ -18,7 +18,7 @@ void main()
 	vec3 argb = texture2D(uAfterUnit, vST).rgb;
 	vec4 color = vec4(1.0,0.,0.,1.);
 	
-#define DIFFERENCE
+#define SHARPNESS
 	
 #ifdef NEGATIVE
 	color.rgb = vec3(1.,1.,1.) - irgb;
@@ -46,6 +46,32 @@ void main()
 		color = vec4(mix(argb, brgb, uT), 1.);
 	else
 		color = vec4(mix(brgb, target, uT-1.), 1.);
+#endif
+
+#ifdef DISSOLVE
+	color = vec4(mix(argb, brgb, uT), 1.);
+#endif
+
+#ifdef SHARPNESS
+	vec2 stp0 = vec2(1./uResS, 0.);
+	vec2 st0p = vec2(0., 1./uResT);
+	vec2 stpp = vec2(1./uResS, 1./uResT);
+	vec2 stpm = vec2(1./uResS, -1./uResT);
+	vec3 i00 = texture2D(uImageUnit, vST).rgb;
+	vec3 im1m1 = texture2D(uImageUnit, vST - stpp).rgb;
+	vec3 ip1p1 = texture2D(uImageUnit, vST + stpp).rgb;
+	vec3 im1p1 = texture2D(uImageUnit, vST - stpm).rgb;
+	vec3 ip1m1 = texture2D(uImageUnit, vST + stpm).rgb;
+	vec3 im10 = texture2D(uImageUnit, vST - stp0).rgb;
+	vec3 ip10 = texture2D(uImageUnit, vST + stp0).rgb;
+	vec3 i0m1 = texture2D(uImageUnit, vST - st0p).rgb;
+	vec3 i1m0 = texture2D(uImageUnit, vST + st0p).rgb;
+	vec3 target = vec3(0.,0.,0.);
+	target += 1.*(im1p1+ip1p1+im1p1+ip1m1);
+	target += 2.*(im10+ip10+i0m1+i1m0);
+	target += 4.*i00;
+	target /= 16.;
+	color = vec4(mix(target, irgb, uT), 1.);
 #endif
 
 	gl_FragColor = color;
