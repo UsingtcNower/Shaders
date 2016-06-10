@@ -18,7 +18,7 @@ void main()
 	vec3 argb = texture2D(uAfterUnit, vST).rgb;
 	vec4 color = vec4(1.0,0.,0.,1.);
 	
-#define SHARPNESS
+#define EDGE
 	
 #ifdef NEGATIVE
 	color.rgb = vec3(1.,1.,1.) - irgb;
@@ -72,6 +72,30 @@ void main()
 	target += 4.*i00;
 	target /= 16.;
 	color = vec4(mix(target, irgb, uT), 1.);
+#endif
+
+#ifdef EDGE
+  // sobel 
+	vec2 stp0 = vec2(1./uResS, 0.);
+	vec2 st0p = vec2(0., 1./uResT);
+	vec2 stpp = vec2(1./uResS, 1./uResT);
+	vec2 stpm = vec2(1./uResS, -1./uResT);
+	vec3 rgb2gray = vec3(0.2125, 0.7154, 0.0721);
+	float i00 = dot(texture2D(uImageUnit, vST).rgb, rgb2gray);
+	float im1m1 = dot(texture2D(uImageUnit, vST-stpp).rgb, rgb2gray);
+	float ip1p1 = dot(texture2D(uImageUnit, vST+stpp).rgb, rgb2gray);
+	float im1p1 = dot(texture2D(uImageUnit, vST-stpm).rgb, rgb2gray);
+	float ip1m1 = dot(texture2D(uImageUnit, vST+stpm).rgb, rgb2gray);
+	float im10 = dot(texture2D(uImageUnit, vST-stp0).rgb, rgb2gray);
+	float ip10 = dot(texture2D(uImageUnit, vST+stp0).rgb, rgb2gray);
+	float i0m1 = dot(texture2D(uImageUnit, vST-st0p).rgb, rgb2gray);
+	float i0p1 = dot(texture2D(uImageUnit, vST+st0p).rgb, rgb2gray);
+	float h = -1.*im1p1 - 2.*i0p1 -1.*ip1p1 + 1.*im1m1 + 2.*i0m1 + 1.*ip1m1;
+	float v = -1.*im1m1 - 2.*im10 -1.*im1p1 + 1.*ip1m1 + 2.*ip10 + 1.*ip1p1;
+	
+	float mag = sqrt(h*h+v*v);
+	vec3 target = vec3(mag, mag, mag);
+	color = vec4(mix(irgb, target, uT), 1.);
 #endif
 
 	gl_FragColor = color;
