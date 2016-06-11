@@ -18,7 +18,7 @@ void main()
 	vec3 argb = texture2D(uAfterUnit, vST).rgb;
 	vec4 color = vec4(1.0,0.,0.,1.);
 	
-#define EDGE
+#define CHROMAKEY
 	
 #ifdef NEGATIVE
 	color.rgb = vec3(1.,1.,1.) - irgb;
@@ -96,6 +96,18 @@ void main()
 	float mag = sqrt(h*h+v*v);
 	vec3 target = vec3(mag, mag, mag);
 	color = vec4(mix(irgb, target, uT), 1.);
+#endif
+
+#ifdef CHROMAKEY
+	float r = irgb.r;
+	float g = irgb.g;
+	float b = irgb.b;
+	color = vec4(irgb, 1.);
+	float rlimit = uT;
+	float glimit = uT;
+	float blimit = 1.-uT;
+	if(r<=rlimit && g<=glimit && b<=blimit)
+		color = vec4(brgb, 1.);
 #endif
 
 	gl_FragColor = color;
