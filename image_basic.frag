@@ -18,7 +18,8 @@ void main()
 	vec3 argb = texture2D(uAfterUnit, vST).rgb;
 	vec4 color = vec4(1.0,0.,0.,1.);
 	
-#define CHROMAKEY
+#define EMBOSS
+#define EMBOSS_SIMPLE
 	
 #ifdef NEGATIVE
 	color.rgb = vec3(1.,1.,1.) - irgb;
@@ -108,6 +109,38 @@ void main()
 	float blimit = 1.-uT;
 	if(r<=rlimit && g<=glimit && b<=blimit)
 		color = vec4(brgb, 1.);
+#endif
+
+#ifdef EMBOSS
+	vec2 stp0 = vec2(1./uResS, 0);
+	vec2 st0p = vec2(0, 1./uResT);
+	vec2 stpp = vec2(1./uResS, 1./uResT);
+	vec2 stpm = vec2(1./uResS, -1./uResT);
+	
+	vec3 c00 = texture2D(uImageUnit, vST).rgb;
+	vec3 cm1m1 = texture2D(uImageUnit, vST-stpp).rgb;
+	vec3 cp1p1 = texture2D(uImageUnit, vST+stpp).rgb;
+	vec3 cm1p1 = texture2D(uImageUnit, vST-stpm).rgb;
+	vec3 cp1m1 = texture2D(uImageUnit, vST+stpm).rgb;
+	vec3 cm10 = texture2D(uImageUnit, vST-stp0).rgb;
+	vec3 cp10 = texture2D(uImageUnit, vST+stp0).rgb;
+	vec3 c0m1 = texture2D(uImageUnit, vST-st0p).rgb;
+	vec3 c0p1 = texture2D(uImageUnit, vST+st0p).rgb;
+	
+	float uAngr = uAngle*(PI/180.);
+	
+	vec3 diffs;
+#ifdef EMBOSS_SIMPLE
+	diffs = c00 - cp1p1;
+	float max = diffs.r;
+	if(abs(diffs.g) > abs(max)) max = diffs.g;
+	if(abs(diffs.b) > abs(max)) max = diffs.b;
+	
+	float gray = clamp(max+.4, 0., 1.);
+	color = vec4(gray, gray, gray, 1.);
+#else
+#endif
+	
 #endif
 
 	gl_FragColor = color;
