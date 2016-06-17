@@ -1,0 +1,19 @@
+##OpenGL GLIB
+
+GSTAP
+
+Ortho -1.  1.  -1.  1.
+LookAt 0 0 1 0 0 0 0 1 0
+
+Texture2D 4 white_balance.bmp
+
+Vertex		white_balance.vert
+Fragment	white_balance.frag
+
+Program WhiteBalance \
+	uImageUnit 4 \
+	uTemperature <4000.0 5000.0 7000.0> \
+	uTint <-200.0 0.0 200.0>
+
+#ÖØÒª£¡
+QuadXY .1 1.
